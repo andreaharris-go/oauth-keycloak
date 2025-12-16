@@ -29,6 +29,8 @@ A complete authentication system using Keycloak 26+, NextJS 15+, and NestJS 11+ 
 
 ## Quick Start
 
+**📖 For detailed setup instructions and testing guide, see [SETUP.md](SETUP.md)**
+
 1. Clone the repository
 2. Run the application:
 
