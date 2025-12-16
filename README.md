@@ -127,7 +127,33 @@ npm run start:dev
 
 ## Configuration
 
+### Security Considerations
+
+⚠️ **IMPORTANT**: This is a demo application with example credentials and secrets. Before deploying to production:
+
+1. **Generate New Secrets**:
+   ```bash
+   # Generate a new Keycloak client secret
+   openssl rand -hex 32
+   ```
+
+2. **Update Secrets in Multiple Locations**:
+   - `docker-compose.yml` - Update `KEYCLOAK_CLIENT_SECRET`
+   - `keycloak/realm-export.json` - Update the `secret` field for `nestjs-backend` client
+   - Backend environment variables
+
+3. **Use Environment Files**: Create a `.env` file (excluded from git) instead of hardcoding secrets in `docker-compose.yml`
+
+4. **Change Default Passwords**:
+   - Keycloak admin password
+   - Database password
+   - Super admin user password (admin@test.com)
+
+5. **For Production**: Use Docker secrets, Kubernetes secrets, or a secrets management service
+
 ### Environment Variables
+
+See `.env.example` for all available configuration options.
 
 #### Backend (.env)
 ```
@@ -136,10 +162,8 @@ PORT=3001
 KEYCLOAK_URL=http://keycloak:8080
 KEYCLOAK_REALM=oauth-demo
 KEYCLOAK_CLIENT_ID=nestjs-backend
-KEYCLOAK_CLIENT_SECRET=ffdf702e77fbf9ec0255bdc727964f2dcd5648d65435249414f3a84dc8091f06
+KEYCLOAK_CLIENT_SECRET=<your-secure-secret-here>
 ```
-
-> **Security Note**: The client secret included in this demo should be changed for production use. Generate a new secret using `openssl rand -hex 32` and update it in both `docker-compose.yml` and `keycloak/realm-export.json`.
 
 #### Frontend (.env.local)
 ```

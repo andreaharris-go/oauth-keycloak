@@ -18,7 +18,8 @@ import { UsersModule } from './users/users.module';
       authServerUrl: process.env.KEYCLOAK_URL || 'http://keycloak:8080',
       realm: process.env.KEYCLOAK_REALM || 'oauth-demo',
       clientId: process.env.KEYCLOAK_CLIENT_ID || 'nestjs-backend',
-      secret: process.env.KEYCLOAK_CLIENT_SECRET || 'your-client-secret-here',
+      // NOTE: The fallback secret is for demo purposes only. In production, this should throw an error if not set.
+      secret: process.env.KEYCLOAK_CLIENT_SECRET || 'ffdf702e77fbf9ec0255bdc727964f2dcd5648d65435249414f3a84dc8091f06',
     }),
     UsersModule,
   ],

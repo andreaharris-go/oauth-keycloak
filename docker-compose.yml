@@ -1,5 +1,12 @@
 version: '3.8'
 
+# SECURITY WARNING: This docker-compose.yml contains demo credentials and secrets.
+# Before deploying to production:
+# 1. Generate new secrets using: openssl rand -hex 32
+# 2. Move secrets to .env file (excluded from version control)
+# 3. Use Docker secrets or a secrets management service
+# 4. Change all default passwords
+
 services:
   postgres:
     image: postgres:16-alpine

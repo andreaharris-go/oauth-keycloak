@@ -33,31 +33,7 @@ export default function SignUp() {
     }
 
     try {
-      const keycloakUrl = process.env.NEXT_PUBLIC_KEYCLOAK_URL || 'http://localhost:8080';
-      const realm = process.env.NEXT_PUBLIC_KEYCLOAK_REALM || 'oauth-demo';
-
-      // Register user via Keycloak's registration endpoint
-      // This uses the self-registration feature which is more secure than using admin API
-      const registrationUrl = `${keycloakUrl}/realms/${realm}/protocol/openid-connect/registrations`;
-      
-      const response = await fetch(registrationUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          username: formData.email,
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          attributes: {
-            company: [formData.company],
-          },
-        }),
-      });
-
-      // Since Keycloak registration endpoint requires a different approach,
-      // we'll use the backend API for user registration instead
+      // Register user via backend API which uses Keycloak service account
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
       const createUserResponse = await fetch(`${apiUrl}/api/v1/users/register`, {
         method: 'POST',
