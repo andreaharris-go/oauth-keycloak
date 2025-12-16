@@ -47,8 +47,7 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
     networks:
       - keycloak-network
     healthcheck:
@@ -58,53 +57,53 @@ services:
       retries: 15
       start_period: 90s
 
-  nestjs:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: nestjs-backend
-    environment:
-      NODE_ENV: development
-      PORT: 3001
-      KEYCLOAK_URL: http://keycloak:8080
-      KEYCLOAK_REALM: oauth-demo
-      KEYCLOAK_CLIENT_ID: nestjs-backend
-      KEYCLOAK_CLIENT_SECRET: ffdf702e77fbf9ec0255bdc727964f2dcd5648d65435249414f3a84dc8091f06
-    ports:
-      - "3001:3001"
-    depends_on:
-      keycloak:
-        condition: service_healthy
-    networks:
-      - keycloak-network
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
-
-  nextjs:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: nextjs-frontend
-    environment:
-      NODE_ENV: development
-      NEXT_PUBLIC_API_URL: http://localhost:3001
-      NEXT_PUBLIC_KEYCLOAK_URL: http://localhost:8080
-      NEXT_PUBLIC_KEYCLOAK_REALM: oauth-demo
-      NEXT_PUBLIC_KEYCLOAK_CLIENT_ID: nextjs-frontend
-      NEXTAUTH_URL: http://localhost:3000
-      NEXTAUTH_SECRET: your-nextauth-secret-change-this-in-production
-    ports:
-      - "3000:3000"
-    depends_on:
-      - nestjs
-      - keycloak
-    networks:
-      - keycloak-network
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-      - /app/.next
+#  nestjs:
+#    build:
+#      context: ./backend
+#      dockerfile: Dockerfile
+#    container_name: nestjs-backend
+#    environment:
+#      NODE_ENV: development
+#      PORT: 3001
+#      KEYCLOAK_URL: http://keycloak:8080
+#      KEYCLOAK_REALM: oauth-demo
+#      KEYCLOAK_CLIENT_ID: nestjs-backend
+#      KEYCLOAK_CLIENT_SECRET: ffdf702e77fbf9ec0255bdc727964f2dcd5648d65435249414f3a84dc8091f06
+#    ports:
+#      - "3001:3001"
+#    depends_on:
+#      keycloak:
+#        condition: service_healthy
+#    networks:
+#      - keycloak-network
+#    volumes:
+#      - ./backend:/app
+#      - /app/node_modules
+#
+#  nextjs:
+#    build:
+#      context: ./frontend
+#      dockerfile: Dockerfile
+#    container_name: nextjs-frontend
+#    environment:
+#      NODE_ENV: development
+#      NEXT_PUBLIC_API_URL: http://localhost:3001
+#      NEXT_PUBLIC_KEYCLOAK_URL: http://localhost:8080
+#      NEXT_PUBLIC_KEYCLOAK_REALM: oauth-demo
+#      NEXT_PUBLIC_KEYCLOAK_CLIENT_ID: nextjs-frontend
+#      NEXTAUTH_URL: http://localhost:3000
+#      NEXTAUTH_SECRET: your-nextauth-secret-change-this-in-production
+#    ports:
+#      - "3000:3000"
+#    depends_on:
+#      - nestjs
+#      - keycloak
+#    networks:
+#      - keycloak-network
+#    volumes:
+#      - ./frontend:/app
+#      - /app/node_modules
+#      - /app/.next
 
 networks:
   keycloak-network:

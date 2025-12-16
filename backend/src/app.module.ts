@@ -15,7 +15,7 @@ import { UsersModule } from './users/users.module';
       isGlobal: true,
     }),
     KeycloakConnectModule.register({
-      authServerUrl: process.env.KEYCLOAK_URL || 'http://keycloak:8080',
+      authServerUrl: process.env.KEYCLOAK_URL || 'http://localhost:8080',
       realm: process.env.KEYCLOAK_REALM || 'oauth-demo',
       clientId: process.env.KEYCLOAK_CLIENT_ID || 'nestjs-backend',
       // NOTE: The fallback secret is for demo purposes only. In production, this should throw an error if not set.

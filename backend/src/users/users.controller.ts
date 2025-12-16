@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body, UseGuards, Req } from '@nestjs/common';
-import { AuthGuard, Roles, RoleMatchingMode, Public } from 'nest-keycloak-connect';
+import { Controller, Get, Post, Body, Req } from '@nestjs/common';
+import { Roles, RoleMatchingMode, Public } from 'nest-keycloak-connect';
 import { UsersService } from './users.service';
 import { Request } from 'express';
 
@@ -16,11 +16,19 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  @UseGuards(AuthGuard)
-  @Roles({ roles: ['user'], mode: RoleMatchingMode.ANY })
+  // @Roles({ roles: ['all'], mode: RoleMatchingMode.ANY })
   async getUsers(@Req() req: Request) {
     const user = (req as any).user;
-    return this.usersService.getUsers(user);
+
+    // Extract access token from Authorization header
+    const authHeader = req.headers.authorization;
+    const accessToken = authHeader?.replace('Bearer ', '');
+
+    console.log('User from token:', user);
+    console.log('Access token available:', !!accessToken);
+    console.log('Access token (first 50 chars):', accessToken?.substring(0, 50));
+
+    return this.usersService.getUsers(user, accessToken);
   }
 
   @Post('register')
