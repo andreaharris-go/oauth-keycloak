@@ -136,8 +136,10 @@ PORT=3001
 KEYCLOAK_URL=http://keycloak:8080
 KEYCLOAK_REALM=oauth-demo
 KEYCLOAK_CLIENT_ID=nestjs-backend
-KEYCLOAK_CLIENT_SECRET=your-client-secret-here
+KEYCLOAK_CLIENT_SECRET=ffdf702e77fbf9ec0255bdc727964f2dcd5648d65435249414f3a84dc8091f06
 ```
+
+> **Security Note**: The client secret included in this demo should be changed for production use. Generate a new secret using `openssl rand -hex 32` and update it in both `docker-compose.yml` and `keycloak/realm-export.json`.
 
 #### Frontend (.env.local)
 ```

@@ -80,7 +80,7 @@
       "clientId": "nestjs-backend",
       "enabled": true,
       "publicClient": false,
-      "secret": "your-client-secret-here",
+      "secret": "ffdf702e77fbf9ec0255bdc727964f2dcd5648d65435249414f3a84dc8091f06",
       "serviceAccountsEnabled": true,
       "authorizationServicesEnabled": true,
       "redirectUris": [

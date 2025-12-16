@@ -62,7 +62,7 @@ services:
       KEYCLOAK_URL: http://keycloak:8080
       KEYCLOAK_REALM: oauth-demo
       KEYCLOAK_CLIENT_ID: nestjs-backend
-      KEYCLOAK_CLIENT_SECRET: your-client-secret-here
+      KEYCLOAK_CLIENT_SECRET: ffdf702e77fbf9ec0255bdc727964f2dcd5648d65435249414f3a84dc8091f06
     ports:
       - "3001:3001"
     depends_on:

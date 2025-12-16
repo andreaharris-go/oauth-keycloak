@@ -33,77 +33,59 @@ export default function SignUp() {
     }
 
     try {
-      // Get Keycloak admin token
       const keycloakUrl = process.env.NEXT_PUBLIC_KEYCLOAK_URL || 'http://localhost:8080';
       const realm = process.env.NEXT_PUBLIC_KEYCLOAK_REALM || 'oauth-demo';
 
-      // For demo purposes, we'll use direct API calls to Keycloak
-      // In production, this should be done through a backend service
-      const adminToken = await getAdminToken(keycloakUrl);
-
-      // Create user in Keycloak
-      const createUserResponse = await fetch(`${keycloakUrl}/admin/realms/${realm}/users`, {
+      // Register user via Keycloak's registration endpoint
+      // This uses the self-registration feature which is more secure than using admin API
+      const registrationUrl = `${keycloakUrl}/realms/${realm}/protocol/openid-connect/registrations`;
+      
+      const response = await fetch(registrationUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${adminToken}`,
         },
         body: JSON.stringify({
           email: formData.email,
           username: formData.email,
           firstName: formData.firstName,
           lastName: formData.lastName,
-          enabled: true,
-          emailVerified: true,
           attributes: {
             company: [formData.company],
           },
-          credentials: [
-            {
-              type: 'password',
-              value: formData.password,
-              temporary: false,
-            },
-          ],
         }),
       });
 
-      if (createUserResponse.ok || createUserResponse.status === 201) {
+      // Since Keycloak registration endpoint requires a different approach,
+      // we'll use the backend API for user registration instead
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const createUserResponse = await fetch(`${apiUrl}/api/v1/users/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          company: formData.company,
+        }),
+      });
+
+      if (createUserResponse.ok) {
         setSuccess('ลงทะเบียนสำเร็จ! กำลังนำคุณไปยังหน้า Sign In...');
         setTimeout(() => {
           router.push('/signin');
         }, 2000);
       } else {
-        const errorData = await createUserResponse.text();
-        console.error('Error creating user:', errorData);
-        setError('ไม่สามารถลงทะเบียนได้ อีเมลนี้อาจถูกใช้งานแล้ว');
+        const errorData = await createUserResponse.json();
+        setError(errorData.message || 'ไม่สามารถลงทะเบียนได้ อีเมลนี้อาจถูกใช้งานแล้ว');
       }
     } catch (err) {
       console.error('Sign up error:', err);
       setError('เกิดข้อผิดพลาดในการลงทะเบียน โปรดลองใหม่อีกครั้ง');
     }
-  };
-
-  const getAdminToken = async (keycloakUrl: string) => {
-    const response = await fetch(`${keycloakUrl}/realms/master/protocol/openid-connect/token`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        client_id: 'admin-cli',
-        username: 'admin',
-        password: 'admin',
-        grant_type: 'password',
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to get admin token');
-    }
-
-    const data = await response.json();
-    return data.access_token;
   };
 
   return (
