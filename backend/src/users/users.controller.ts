@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body, Req } from '@nestjs/common';
-import { Roles, RoleMatchingMode, Public } from 'nest-keycloak-connect';
+import { Controller, Get, Post, Body, Req, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from './users.service';
 import { Request } from 'express';
 
@@ -16,7 +16,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  // @Roles({ roles: ['all'], mode: RoleMatchingMode.ANY })
+  @UseGuards(AuthGuard('jwt'))
   async getUsers(@Req() req: Request) {
     const user = (req as any).user;
 
@@ -32,7 +32,7 @@ export class UsersController {
   }
 
   @Post('register')
-  @Public()
+  // TODO: @Public() - This endpoint should be public (no JWT authentication required)
   async register(@Body() registerDto: RegisterUserDto) {
     return this.usersService.registerUser(registerDto);
   }
