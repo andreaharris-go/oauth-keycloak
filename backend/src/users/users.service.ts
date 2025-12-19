@@ -260,12 +260,21 @@ export class UsersService {
         },
       );
 
+      console.log('Token response status:', tokenResponse.status);
+
       if (!tokenResponse.ok) {
-        throw new Error('Failed to get service account token');
+        const errorText = await tokenResponse.text();
+        console.error('Failed to get service account token:', errorText);
+        throw new HttpException(
+          'Failed to authenticate with Keycloak. Check client credentials.',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
       }
 
       const tokenData = await tokenResponse.json();
       const accessToken = tokenData.access_token;
+
+      console.log('Service account token obtained successfully');
 
       // Create user in Keycloak
       const createUserResponse = await fetch(
@@ -297,11 +306,30 @@ export class UsersService {
         },
       );
 
+      console.log('Create user response status:', createUserResponse.status);
+
       if (!createUserResponse.ok) {
         const error = await createUserResponse.text();
-        console.error('Keycloak error:', error);
+        console.error('Keycloak create user error:', error);
+
+        if (createUserResponse.status === 403) {
+          throw new HttpException(
+            'Permission denied: Service account does not have the required roles. ' +
+            'Please enable "Service accounts enabled" and assign "manage-users" role ' +
+            'from realm-management to the nestjs-backend client in Keycloak Admin Console.',
+            HttpStatus.FORBIDDEN,
+          );
+        }
+
+        if (createUserResponse.status === 409) {
+          throw new HttpException(
+            'User with this email already exists.',
+            HttpStatus.CONFLICT,
+          );
+        }
+
         throw new HttpException(
-          'Failed to create user. Email may already exist.',
+          `Failed to create user: ${error}`,
           HttpStatus.BAD_REQUEST,
         );
       }

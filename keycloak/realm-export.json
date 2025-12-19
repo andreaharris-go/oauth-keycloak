@@ -11,7 +11,14 @@
   "attributes": {
     "frontendUrl": "http://localhost:8080"
   },
-  "defaultRoles": ["user"],
+  "defaultRole": {
+    "name": "default-roles-oauth-demo",
+    "description": "Default roles for oauth-demo realm",
+    "composite": true,
+    "composites": {
+      "realm": ["user"]
+    }
+  },
   "users": [
     {
       "username": "admin@test.com",
@@ -31,17 +38,39 @@
         "company": ["super"]
       },
       "realmRoles": ["user", "admin"]
+    },
+    {
+      "username": "service-account-nestjs-backend",
+      "enabled": true,
+      "serviceAccountClientId": "nestjs-backend",
+      "clientRoles": {
+        "realm-management": [
+          "manage-users",
+          "view-users",
+          "create-client"
+        ]
+      }
     }
   ],
   "roles": {
     "realm": [
       {
         "name": "user",
-        "description": "User role"
+        "description": "User role",
+        "composite": false
       },
       {
         "name": "admin",
-        "description": "Administrator role"
+        "description": "Administrator role",
+        "composite": false
+      },
+      {
+        "name": "default-roles-oauth-demo",
+        "description": "Default roles for oauth-demo realm",
+        "composite": true,
+        "composites": {
+          "realm": ["user"]
+        }
       }
     ]
   },
