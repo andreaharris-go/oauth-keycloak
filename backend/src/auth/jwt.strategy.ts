@@ -7,8 +7,8 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private configService: ConfigService) {
-    const keycloakUrl = configService.get<string>('KEYCLOAK_URL') || process.env.KEYCLOAK_URL || 'http://localhost:8080';
-    const realm = configService.get<string>('KEYCLOAK_REALM') || process.env.KEYCLOAK_REALM || 'oauth-demo';
+    const keycloakUrl = configService.get<string>('KEYCLOAK_URL', 'http://localhost:8080');
+    const realm = configService.get<string>('KEYCLOAK_REALM', 'oauth-demo');
     const jwksUri = `${keycloakUrl}/realms/${realm}/protocol/openid-connect/certs`;
 
     super({
