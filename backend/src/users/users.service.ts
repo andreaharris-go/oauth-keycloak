@@ -175,6 +175,34 @@ export class UsersService {
       const tokenData = await tokenResponse.json();
       const accessToken = tokenData.access_token;
 
+      // Prepare user data
+      const userData = {
+        email: registerDto.email,
+        username: registerDto.email,
+        firstName: registerDto.firstName,
+        lastName: registerDto.lastName,
+        enabled: true,
+        emailVerified: false,
+        attributes: {
+          company: [registerDto.company],
+        },
+        credentials: [
+          {
+            type: 'password',
+            value: registerDto.password,
+            temporary: false,
+          },
+        ],
+      };
+
+      console.log('Creating user with data:', {
+        email: userData.email,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        company: registerDto.company,
+        attributes: userData.attributes,
+      });
+
       // Create user in Keycloak
       const createUserResponse = await fetch(
         `${keycloakUrl}/admin/realms/${realm}/users`,
@@ -184,24 +212,7 @@ export class UsersService {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${accessToken}`,
           },
-          body: JSON.stringify({
-            email: registerDto.email,
-            username: registerDto.email,
-            firstName: registerDto.firstName,
-            lastName: registerDto.lastName,
-            enabled: true,
-            emailVerified: false,
-            attributes: {
-              company: [registerDto.company],
-            },
-            credentials: [
-              {
-                type: 'password',
-                value: registerDto.password,
-                temporary: false,
-              },
-            ],
-          }),
+          body: JSON.stringify(userData),
         },
       );
 

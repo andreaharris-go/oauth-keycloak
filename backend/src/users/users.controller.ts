@@ -34,6 +34,8 @@ export class UsersController {
   @Post('register')
   // TODO: @Public() - This endpoint should be public (no JWT authentication required)
   async register(@Body() registerDto: RegisterUserDto) {
+    console.log('Register endpoint received data:', registerDto);
+    console.log('Company field value:', registerDto.company);
     return this.usersService.registerUser(registerDto);
   }
 }
